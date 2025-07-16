@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blade & Soul Revolution Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Blade & Soul Revolution Tracker</h1>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active" data-tab="contribution">Contribution Tracker</a></li>
+                    <li><a href="#" data-tab="pet">Pet Evolution Calculator</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Contribution Tracker Section -->
+            <section id="contribution" class="tab-content active">
+                <div class="table-container">
+                    <table id="contribution-table">
+                        <thead>
+                            <tr>
+                                <th>Place</th>
+                                <th>Level</th>
+                                <th>Status Common</th>
+                                <th>Status Elite</th>
+                                <th>Date Taken</th>
+                                <th>Continent</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="add-button-container">
+    <button id="add-contribution-btn" class="btn">Add Contribution</button>
+</div>
+
+<!-- Add this modal structure at the bottom of your body (before the scripts) -->
+<div id="add-contribution-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Add New Contribution</h3>
+        <form id="contribution-form">
+            <div class="form-group">
+                <label for="place">Place:</label>
+                <input type="text" id="place" required>
+            </div>
+            <div class="form-group">
+                <label for="level">Level:</label>
+                <input type="text" id="level" required>
+            </div>
+            <div class="form-group">
+                <label for="status-common">Status Common:</label>
+                <input type="text" id="status-common" required>
+            </div>
+            <div class="form-group">
+                <label for="status-elite">Status Elite:</label>
+                <input type="text" id="status-elite" required>
+            </div>
+            <div class="form-group">
+                <label for="date">Date Taken:</label>
+                <input type="date" id="date" required>
+            </div>
+            <div class="form-group">
+                <label for="continent">Continent:</label>
+                <input type="text" id="continent" required>
+            </div>
+            <div class="form-actions">
+                <button type="button" id="cancel-add" class="btn btn-cancel">Cancel</button>
+                <button type="submit" class="btn">Add Contribution</button>
+            </div>
+        </form>
+    </div>
+</div>
+            </section>
+
+            <!-- Pet Evolution Calculator Section -->
+            <section id="pet" class="tab-content">
+                <div class="pet-calculator">
+                    <h2>Mythic Pet Evolution Calculator</h2>
+                    <div class="pet-info">
+                        <p><strong>Evolution Rules:</strong></p>
+                        <ul>
+                            <li>Mythic Pets can be evolved to Mythic [True] Pets, and Mythic [True] Pets can be further evolved to Mythic [Ultimate] Pets.</li>
+                            <li>When using the same Pet or higher evolution-tier Pet as material, the success rate is 100%.</li>
+                            <li>Using a different Pet of the same grade gives 66% success rate.</li>
+                            <li>Upon failure: Mythic [True] evolution grants 50 'Super Pet Aura', Mythic [Ultimate] grants 100 'Super Pet Aura'.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="calculator-form">
+                        <div class="form-group">
+                            <label for="current-pet">Current Pet Tier:</label>
+                            <select id="current-pet">
+                                <option value="mythic">Mythic</option>
+                                <option value="mythic-true">Mythic [True]</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="material-pet">Material Pet Tier:</label>
+                            <select id="material-pet">
+                                <option value="mythic">Mythic</option>
+                                <option value="mythic-true">Mythic [True]</option>
+                                <option value="mythic-ultimate">Mythic [Ultimate]</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="pet-type">Pet Type:</label>
+                            <select id="pet-type">
+                                <option value="same">Same Pet</option>
+                                <option value="different">Different Pet</option>
+                            </select>
+                        </div>
+                        <button id="calculate-btn" class="btn">Calculate Success Rate</button>
+                    </div>
+                    
+                    <div id="result" class="result-container">
+                        <h3>Evolution Result</h3>
+                        <div id="success-rate" class="result-box">
+                            <p>Success Rate: <span id="rate">0</span>%</p>
+                        </div>
+                        <div id="failure-reward" class="result-box">
+                            <p>Failure Reward: <span id="aura">0</span> Super Pet Aura</p>
+                        </div>
+                        <div id="evolution-result" class="result-box">
+                            <p>Resulting Pet: <span id="result-pet">None</span></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        
+
+        <footer>
+            <p>Created by John Alber Retiza</p>
+            <p>Official Blade & Soul Revolution Forum: <a href="https://forum.netmarble.com/bnsasia_en" target="_blank">https://forum.netmarble.com/bnsasia_en</a></p>
+        </footer>
+    </div>
+    <script src="contribution.js"></script>
+    <script src="pet.js"></script>
+    <script>
+        // Tab switching functionality (shared between both sections)
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('nav ul li a');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

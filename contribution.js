@@ -6,25 +6,40 @@ document.addEventListener('DOMContentLoaded', function() {
     const contributionForm = document.getElementById('contribution-form');
     const contributionTable = document.getElementById('contribution-table').getElementsByTagName('tbody')[0];
     
-    // Sample data
-    const sampleData = [
-        {
-            place: "Forgotten Labyrinth",
-            level: "8",
-            statusCommon: "Complete",
-            statusElite: "Complete",
-            date: new Date().toISOString().split('T')[0], // Today's date
-            continent: "Ciderlands"
-        },
-        {
-            place: "Valley Area",
-            level: "7",
-            statusCommon: "9,598 / 19,000",
-            statusElite: "602 / 1,200",
-            date: new Date(Date.now() - 86400000).toISOString().split('T')[0], // Yesterday's date
-            continent: "Moonlight Ravigne"
+    // Load data from localStorage or use sample data if none exists
+    const loadData = () => {
+        const savedData = localStorage.getItem('contributionData');
+        if (savedData) {
+            return JSON.parse(savedData);
+        } else {
+            // Sample data
+            return [
+                {
+                    place: "Forgotten Labyrinth",
+                    level: "8",
+                    statusCommon: "Complete",
+                    statusElite: "Complete",
+                    date: new Date().toISOString().split('T')[0], // Today's date
+                    continent: "Ciderlands"
+                },
+                {
+                    place: "Valley Area",
+                    level: "7",
+                    statusCommon: "9,598 / 19,000",
+                    statusElite: "602 / 1,200",
+                    date: new Date(Date.now() - 86400000).toISOString().split('T')[0], // Yesterday's date
+                    continent: "Moonlight Ravigne"
+                }
+            ];
         }
-    ];
+    };
+    
+    // Save data to localStorage
+    const saveData = (data) => {
+        localStorage.setItem('contributionData', JSON.stringify(data));
+    };
+    
+    let contributionData = loadData();
 
     // Open add contribution modal
     if (addContributionBtn) {
@@ -84,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Populate table
-    function populateTable(data = sampleData) {
+    function populateTable(data = contributionData) {
         contributionTable.innerHTML = '';
         data.forEach((item, index) => {
             const row = contributionTable.insertRow();
@@ -137,7 +152,8 @@ document.addEventListener('DOMContentLoaded', function() {
             continent: document.getElementById('continent').value
         };
         
-        sampleData.push(newContribution);
+        contributionData.push(newContribution);
+        saveData(contributionData);
         populateTable();
         renderCalendar();
         this.reset();
@@ -147,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Edit contribution
     function editContribution(e) {
         const index = e.target.getAttribute('data-index');
-        const item = sampleData[index];
+        const item = contributionData[index];
         
         document.getElementById('place').value = item.place;
         document.getElementById('level').value = item.level;
@@ -156,14 +172,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('date').value = item.date;
         document.getElementById('continent').value = item.continent;
         
-        sampleData.splice(index, 1);
+        contributionData.splice(index, 1);
+        saveData(contributionData);
         addContributionModal.style.display = 'block';
     }
     
     // Delete contribution
     function deleteContribution(e) {
         const index = e.target.getAttribute('data-index');
-        sampleData.splice(index, 1);
+        contributionData.splice(index, 1);
+        saveData(contributionData);
         populateTable();
         renderCalendar();
     }
@@ -211,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dayElement.dataset.date = dateStr;
             
             // Check if this date has data
-            const hasData = sampleData.some(item => item.date === dateStr);
+            const hasData = contributionData.some(item => item.date === dateStr);
             if (hasData) {
                 dayElement.classList.add('has-data');
             }
@@ -225,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function filterByDate(date) {
-        const filteredData = sampleData.filter(item => item.date === date);
+        const filteredData = contributionData.filter(item => item.date === date);
         if (filteredData.length > 0) {
             populateTable(filteredData);
             
